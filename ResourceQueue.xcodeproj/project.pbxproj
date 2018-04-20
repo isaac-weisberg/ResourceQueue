@@ -53,8 +53,8 @@
 		A01983D42089B1F300ADE614 = {
 			isa = PBXGroup;
 			children = (
-				A01983E02089B1F300ADE614 /* ResourceQueue */,
-				A01983EB2089B1F300ADE614 /* ResourceQueueTests */,
+				A01983FA2089BD8300ADE614 /* Sources */,
+				A01983FB2089BD8D00ADE614 /* Tests */,
 				A01983DF2089B1F300ADE614 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -84,6 +84,22 @@
 				A01983EE2089B1F300ADE614 /* Info.plist */,
 			);
 			path = ResourceQueueTests;
+			sourceTree = "<group>";
+		};
+		A01983FA2089BD8300ADE614 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				A01983E02089B1F300ADE614 /* ResourceQueue */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		A01983FB2089BD8D00ADE614 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				A01983EB2089B1F300ADE614 /* ResourceQueueTests */,
+			);
+			path = Tests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -347,7 +363,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = ResourceQueue/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/ResourceQueue/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -374,7 +390,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = ResourceQueue/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/ResourceQueue/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -395,7 +411,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = ResourceQueueTests/Info.plist;
+				INFOPLIST_FILE = Tests/ResourceQueueTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -413,7 +429,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = ResourceQueueTests/Info.plist;
+				INFOPLIST_FILE = Tests/ResourceQueueTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
