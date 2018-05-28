@@ -8,6 +8,14 @@
 
 import Foundation
 
+public typealias CreativeResourceRetainer<Input, Output> = GenericCreativeResourceRetainer<Input, String, Output>
+
+public class CreativeResourceRetainerStringed<Output>: GenericCreativeResourceRetainer<String, String, Output> {
+    public init(_ creator: @escaping Creator) {
+        super.init({$0}, creator)
+    }
+}
+
 public class GenericCreativeResourceRetainer<Input, Key: Hashable, Output> {
     public typealias Transformer = (Input) -> Key
     public typealias Creator = (Input, Key, @escaping ResourceRetainer<Key, Output>.Releaser) -> Output
