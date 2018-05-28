@@ -11,6 +11,7 @@
 		A01983ED2089B1F300ADE614 /* ResourceQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01983EC2089B1F300ADE614 /* ResourceQueueTests.swift */; };
 		A01983F92089B23300ADE614 /* ResourceQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01983F82089B23300ADE614 /* ResourceQueue.swift */; };
 		A043299C20B003AE00252273 /* ResourceCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A043299B20B003AD00252273 /* ResourceCollector.swift */; };
+		A0849CED20BBBD780017E4EA /* ResourceRetainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0849CEC20BBBD780017E4EA /* ResourceRetainer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,6 +32,7 @@
 		A01983EE2089B1F300ADE614 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A01983F82089B23300ADE614 /* ResourceQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceQueue.swift; sourceTree = "<group>"; };
 		A043299B20B003AD00252273 /* ResourceCollector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceCollector.swift; sourceTree = "<group>"; };
+		A0849CEC20BBBD780017E4EA /* ResourceRetainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceRetainer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +78,7 @@
 				A01983E22089B1F300ADE614 /* Info.plist */,
 				A043299B20B003AD00252273 /* ResourceCollector.swift */,
 				A01983F82089B23300ADE614 /* ResourceQueue.swift */,
+				A0849CEC20BBBD780017E4EA /* ResourceRetainer.swift */,
 			);
 			path = ResourceQueue;
 			sourceTree = "<group>";
@@ -215,6 +218,7 @@
 			files = (
 				A01983F92089B23300ADE614 /* ResourceQueue.swift in Sources */,
 				A043299C20B003AE00252273 /* ResourceCollector.swift in Sources */,
+				A0849CED20BBBD780017E4EA /* ResourceRetainer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
