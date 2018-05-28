@@ -18,24 +18,33 @@ public class ResourceRetainer<Handle: Hashable, Resource> {
         return dictionary[handle]
     }
     
-    public func retain(_ resource: Resource, with handle: Handle, releaseSetup: Setupper) {
-        retain(resource, with: handle) {
-            releaseSetup(handle, resource, unhandle(handle))
+    public func retain(_ resource: Resource, with handle: Handle, releaseSetup: @escaping Setupper) {
+        unhandling(handle) { releaser in
+            retain(resource, with: handle) {
+                releaseSetup(handle, resource, releaser)
+            }
         }
     }
     
-    public func retain(_ resource: Resource, with handle: Handle, simpleSetup: (@escaping Releaser) -> Void) {
-        retain(resource, with: handle) {
-            simpleSetup(unhandle(handle))
+    public func retain(_ resource: Resource, with handle: Handle, simpleSetup: @escaping (@escaping Releaser) -> Void) {
+        unhandling(handle) { releaser in
+            retain(resource, with: handle) {
+                simpleSetup(releaser)
+            }
         }
     }
     
-    private func retain(_ resource: Resource, with handle: Handle, doingStuff: () -> Void) {
+    internal func retain(_ resource: Resource, with handle: Handle, doingStuff: (Releaser)? = nil) {
         dictionary[handle] = resource
-        doingStuff()
+        doingStuff?()
     }
     
-    private func unhandle(_ handle: Handle) -> () -> Void {
+    internal func unhandling(_ handle: Handle, _ actions: (@escaping Releaser) -> Void) {
+        let releaser = unhandler(for: handle)
+        actions(releaser)
+    }
+    
+    internal func unhandler(for handle: Handle) -> Releaser {
         return {[weak self] in
             self?.dictionary[handle] = nil
         }

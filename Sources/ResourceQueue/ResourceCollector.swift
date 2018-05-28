@@ -14,7 +14,7 @@ public class GenericResourceCollector<Input, Key: Hashable, Output> {
     
     public let queue: ResourceQueue<Key, Output>
     
-    public init(length: Int = 10, _ keyConverter: @escaping  Converter, _ creator: @escaping Creator) {
+    public init(length: Int = 10, _ keyConverter: @escaping Converter, _ creator: @escaping Creator) {
         self.queue = ResourceQueue<Key, Output>(withLengthOf: length)
         self.creator = creator
         self.converter = keyConverter
