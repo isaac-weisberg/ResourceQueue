@@ -39,14 +39,12 @@ public class ResourceRetainer<Handle: Hashable, Resource> {
         doingStuff?()
     }
     
-    internal func unhandling(_ handle: Handle, _ actions: (@escaping Releaser) -> Void) {
-        let releaser = unhandler(for: handle)
-        actions(releaser)
-    }
-    
-    internal func unhandler(for handle: Handle) -> Releaser {
-        return {[weak self] in
+    @discardableResult
+    internal func unhandling<Object>(_ handle: Handle, _ actions: (@escaping Releaser) -> Object) -> Object {
+        let releaser = {[weak self] in
             self?.dictionary[handle] = nil
+            return
         }
+        return actions(releaser)
     }
 }

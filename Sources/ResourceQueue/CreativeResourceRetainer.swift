@@ -27,7 +27,9 @@ public class GenericCreativeResourceRetainer<Input, Key: Hashable, Output> {
         if let output = retainer.retained(with: key) {
             return output
         }
-        let output = creator(input, key, retainer.unhandler(for: key))
+        let output = retainer.unhandling(key) { releaser -> Output in
+            creator(input, key, releaser)
+        }
         retainer.retain(output, with: key)
         return output
     }
