@@ -6,14 +6,16 @@
 //  Copyright © 2018 Isaac Weisberg. All rights reserved.
 //
 
-public class ResourceCollector<Input, Output> {
-    public typealias Converter = (Input) -> String
+public typealias ResourceCollector<Input, Output> = GenericResourceCollector<Input, String, Output>
+
+public class GenericResourceCollector<Input, Key: Hashable, Output> {
+    public typealias Converter = (Input) -> Key
     public typealias Creator = (Input) -> Output
     
-    public let queue: ResourceQueue<String, Output>
+    public let queue: ResourceQueue<Key, Output>
     
     public init(length: Int = 10, _ keyConverter: @escaping  Converter, _ creator: @escaping Creator) {
-        self.queue = ResourceQueue<String, Output>(withLengthOf: length)
+        self.queue = ResourceQueue<Key, Output>(withLengthOf: length)
         self.creator = creator
         self.converter = keyConverter
     }
