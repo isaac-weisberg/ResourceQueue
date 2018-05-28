@@ -10,7 +10,7 @@ import Foundation
 
 public class ResourceRetainer<Handle: Hashable, Resource> {
     public typealias Releaser = () -> Void
-    public typealias Setupper = (Handle, Resource, Releaser) -> Void
+    public typealias Setupper = (Handle, Resource, @escaping Releaser) -> Void
     
     private var dictionary = [Handle: Resource]()
     
@@ -19,16 +19,25 @@ public class ResourceRetainer<Handle: Hashable, Resource> {
     }
     
     public func retain(_ resource: Resource, with handle: Handle, releaseSetup: Setupper) {
-        releaseSetup(handle, resource) {
-            dictionary[handle] = nil
+        retain(resource, with: handle) {
+            releaseSetup(handle, resource, unhandle(handle))
         }
-        dictionary[handle] = resource
     }
     
-    public func retain(_ resource: Resource, with handle: Handle, simpleSetup: (Releaser) -> Void) {
-        simpleSetup {
-            dictionary[handle] = nil
+    public func retain(_ resource: Resource, with handle: Handle, simpleSetup: (@escaping Releaser) -> Void) {
+        retain(resource, with: handle) {
+            simpleSetup(unhandle(handle))
         }
+    }
+    
+    private func retain(_ resource: Resource, with handle: Handle, doingStuff: () -> Void) {
         dictionary[handle] = resource
+        doingStuff()
+    }
+    
+    private func unhandle(_ handle: Handle) -> () -> Void {
+        return {[weak self] in
+            self?.dictionary[handle] = nil
+        }
     }
 }
