@@ -8,6 +8,12 @@
 
 public typealias ResourceCollector<Input, Output> = GenericResourceCollector<Input, String, Output>
 
+public class ResourceCollectorStringed<Output>: GenericResourceCollector<String, String, Output> {
+    public init(length: Int = 10, _ creator: @escaping Creator) {
+        super.init(length: length, {$0}, creator)
+    }
+}
+
 public class GenericResourceCollector<Input, Key: Hashable, Output> {
     public typealias Converter = (Input) -> Key
     public typealias Creator = (Input) -> Output
