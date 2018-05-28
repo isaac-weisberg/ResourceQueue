@@ -13,7 +13,11 @@ public class ResourceRetainer<Handle: Hashable, Resource> {
     public typealias SimpleSetupper = (@escaping Releaser) -> Void
     public typealias Setupper = (Handle, Resource, @escaping Releaser) -> Void
     
-    private var dictionary = [Handle: Resource]()
+    private var dictionary: [Handle: Resource]
+    
+    public init() {
+        dictionary = [:]
+    }
     
     public func retained(with handle: Handle) -> Resource? {
         return dictionary[handle]
