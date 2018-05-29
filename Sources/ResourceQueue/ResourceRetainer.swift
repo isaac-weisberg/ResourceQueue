@@ -8,41 +8,41 @@
 
 import Foundation
 
-public class ResourceRetainer<Handle: Hashable, Resource> {
+public class ResourceRetainer<Handle: Hashable> {
     public typealias Releaser = () -> Void
     public typealias SimpleSetupper = (@escaping Releaser) -> Void
-    public typealias Setupper = (Handle, Resource, @escaping Releaser) -> Void
+    public typealias Setupper<ResourceType> = (Handle, ResourceType, @escaping Releaser) -> Void
     
-    private var dictionary: [Handle: Resource]
+    private var dictionary: [Handle: Any]
     
     public init() {
         dictionary = [:]
     }
     
-    public func retained(with handle: Handle) -> Resource? {
-        return dictionary[handle]
+    public func retained<Object>(with handle: Handle) -> Object? {
+        return dictionary[handle] as? Object
     }
     
-    public func retain(_ resource: Resource, with handle: Handle, releaseSetup: @escaping Setupper) {
+    public func retain<Object>(_ resource: Object, with handle: Handle, releaseSetup: @escaping Setupper<Object>) {
         prepare(resource, with: handle) { releaser in
             releaseSetup(handle, resource, releaser)
         }
     }
     
-    public func retain(_ resource: Resource, with handle: Handle, simpleSetup: @escaping SimpleSetupper) {
+    public func retain<Object>(_ resource: Object, with handle: Handle, simpleSetup: @escaping SimpleSetupper) {
         prepare(resource, with: handle) { releaser in
             simpleSetup(releaser)
         }
     }
     
-    private func prepare(_ resource: Resource, with handle: Handle, _ actions: (@escaping Releaser) -> Void) {
+    private func prepare<Object>(_ resource: Object, with handle: Handle, _ actions: (@escaping Releaser) -> Void) {
         unhandling(handle) { releaser in
             retain(resource, with: handle)
             actions(releaser)
         }
     }
     
-    internal func retain(_ resource: Resource, with handle: Handle) {
+    internal func retain<Object>(_ resource: Object, with handle: Handle) {
         dictionary[handle] = resource
     }
     
