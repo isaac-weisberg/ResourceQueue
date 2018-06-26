@@ -6,9 +6,9 @@
 //  Copyright © 2018 isaac-weisberg. All rights reserved.
 //
 
-public class ResourceQueue<Handle: Hashable, Resource> {
-    typealias Entry = (Handle, Resource)
-    
+public class GenericResourceQueue<Handle: Hashable> {
+    typealias Entry = (Handle, Any)
+
     internal var queue: [Entry] = []
     internal var queueLength: Int
     
@@ -38,7 +38,7 @@ public class ResourceQueue<Handle: Hashable, Resource> {
     ///     - resource: a resource to be enqueued.
     ///     - handle: a handle to be used to remember the resource.
     ///
-    public func enqueue(resource: Resource, for handle: Handle) {
+    public func enqueue<Resource>(resource: Resource, for handle: Handle) {
         queue.append((handle, resource))
         recover()
     }
@@ -46,8 +46,15 @@ public class ResourceQueue<Handle: Hashable, Resource> {
     ///
     /// Dequeue a resource at a hashable handle without removing it from strongly retained queue.
     ///
-    public func dequeue(at handle: Handle) -> Resource? {
-        return queue.first { $0.0 == handle }?.1
+    public func dequeue<Resource>(at handle: Handle) -> Resource? {
+        guard let resource = queue.first(where: { $0.0 == handle })?.1 else {
+            return nil
+        }
+        guard let actualResource = resource as? Resource else {
+            remove(at: handle)
+            return nil
+        }
+        return actualResource
     }
     
     ///
@@ -68,5 +75,25 @@ public class ResourceQueue<Handle: Hashable, Resource> {
         }) {
             queue.remove(at: index)
         }
+    }
+}
+
+public class ResourceQueue<Handle: Hashable, Resource>: GenericResourceQueue<Handle> {
+    ///
+    /// Enqueue a resource for strong retention at a hashable handle.
+    ///
+    /// - parameters:
+    ///     - resource: a resource to be enqueued.
+    ///     - handle: a handle to be used to remember the resource.
+    ///
+    public func enqueue(resource: Resource, for handle: Handle) {
+        return enqueue(resource: resource, for: handle)
+    }
+    
+    ///
+    /// Dequeue a resource at a hashable handle without removing it from strongly retained queue.
+    ///
+    public func dequeue(at handle: Handle) -> Resource? {
+        return dequeue(at: handle)
     }
 }
