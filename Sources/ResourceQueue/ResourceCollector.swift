@@ -6,15 +6,15 @@
 //  Copyright © 2018 Isaac Weisberg. All rights reserved.
 //
 
-public typealias ResourceCollector<Input, Output> = GenericResourceCollector<Input, String, Output>
+public typealias ResourceCollector<Input, Output: AnyObject> = GenericResourceCollector<Input, String, Output>
 
-public class ResourceCollectorStringed<Output>: GenericResourceCollector<String, String, Output> {
+public class ResourceCollectorStringed<Output: AnyObject>: GenericResourceCollector<String, String, Output> {
     public init(length: Int = 10, _ creator: @escaping Creator) {
         super.init(length: length, {$0}, creator)
     }
 }
 
-public class GenericResourceCollector<Input, Key: Hashable, Output> {
+public class GenericResourceCollector<Input, Key: Hashable, Output: AnyObject> {
     public typealias Converter = (Input) -> Key
     public typealias Creator = (Input) -> Output
     
