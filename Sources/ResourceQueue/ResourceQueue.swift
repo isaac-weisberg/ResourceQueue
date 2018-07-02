@@ -7,7 +7,7 @@
 //
 
 
-protocol ResourceQueueProtocol: class {
+public protocol ResourceQueueProtocol: class {
     associatedtype Handle: Hashable
 
     typealias Entry = (Handle, AnyObject)
@@ -15,8 +15,6 @@ protocol ResourceQueueProtocol: class {
     var queue: ArraySlice<Entry> { get set }
 
     var queueLength: Int { get set }
-
-    func recover()
 
     func setLength(_ length: Int)
 
@@ -34,7 +32,7 @@ extension ResourceQueueProtocol {
         recover()
     }
 
-    internal func recover() {
+    func recover() {
         if queue.count > queueLength {
             let diff = queue.count - queueLength
             queue.removeSubrange(0..<diff)
@@ -63,8 +61,8 @@ extension ResourceQueueProtocol {
 }
 
 public class GenericResourceQueue<Handle: Hashable>: ResourceQueueProtocol {
-    internal var queue: ArraySlice<(Handle, AnyObject)> = ArraySlice([])
-    internal var queueLength: Int
+    public var queue: ArraySlice<(Handle, AnyObject)> = ArraySlice([])
+    public var queueLength: Int
     
     public init(withLengthOf length: Int = 10) {
         queueLength = length
@@ -98,8 +96,8 @@ public class GenericResourceQueue<Handle: Hashable>: ResourceQueueProtocol {
 }
 
 public class ResourceQueue<Handle: Hashable, Resource: AnyObject>: ResourceQueueProtocol {
-    var queue: ArraySlice<(Handle, AnyObject)> = ArraySlice([])
-    var queueLength: Int
+    public var queue: ArraySlice<(Handle, AnyObject)> = ArraySlice([])
+    public var queueLength: Int
 
     public init(withLengthOf length: Int = 10) {
         queueLength = length
