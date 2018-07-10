@@ -10,7 +10,7 @@
 public protocol ResourceQueueProtocol: class {
     associatedtype Handle: Hashable
 
-    typealias Entry = (Handle, AnyObject)
+    typealias Entry = (Handle, Any)
 
     var queue: ArraySlice<Entry> { get set }
 
@@ -61,7 +61,7 @@ extension ResourceQueueProtocol {
 }
 
 public class GenericResourceQueue<Handle: Hashable>: ResourceQueueProtocol {
-    public var queue: ArraySlice<(Handle, AnyObject)> = ArraySlice([])
+    public var queue: ArraySlice<(Handle, Any)> = ArraySlice([])
     public var queueLength: Int
     
     public init(withLengthOf length: Int = 10) {
@@ -75,7 +75,7 @@ public class GenericResourceQueue<Handle: Hashable>: ResourceQueueProtocol {
     ///     - resource: a resource to be enqueued.
     ///     - handle: a handle to be used to remember the resource.
     ///
-    public func enqueue<Resource: AnyObject>(resource: Resource, for handle: Handle) {
+    public func enqueue<Resource>(resource: Resource, for handle: Handle) {
         queue.append((handle, resource))
         recover()
     }
@@ -83,7 +83,7 @@ public class GenericResourceQueue<Handle: Hashable>: ResourceQueueProtocol {
     ///
     /// Dequeue a resource at a hashable handle without removing it from strongly retained queue.
     ///
-    public func dequeue<Resource: AnyObject>(at handle: Handle) -> Resource? {
+    public func dequeue<Resource>(at handle: Handle) -> Resource? {
         guard let resource = queue.first(where: { $0.0 == handle })?.1 else {
             return nil
         }
@@ -95,8 +95,8 @@ public class GenericResourceQueue<Handle: Hashable>: ResourceQueueProtocol {
     }
 }
 
-public class ResourceQueue<Handle: Hashable, Resource: AnyObject>: ResourceQueueProtocol {
-    public var queue: ArraySlice<(Handle, AnyObject)> = ArraySlice([])
+public class ResourceQueue<Handle: Hashable, Resource>: ResourceQueueProtocol {
+    public var queue: ArraySlice<(Handle, Any)> = ArraySlice([])
     public var queueLength: Int
 
     public init(withLengthOf length: Int = 10) {
