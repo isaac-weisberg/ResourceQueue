@@ -6,11 +6,14 @@
 //  Copyright © 2018 isaac-weisberg. All rights reserved.
 //
 
+import Foundation
 
 public protocol ResourceQueueProtocol: class {
     associatedtype Handle: Hashable
 
     typealias Entry = (Handle, Any)
+
+    var semaphore: DispatchSemaphore { get }
 
     var queue: ArraySlice<Entry> { get set }
 
@@ -24,12 +27,21 @@ public protocol ResourceQueueProtocol: class {
 }
 
 extension ResourceQueueProtocol {
+    func semaphoring<ReturnType>(_ actions: () -> ReturnType) -> ReturnType {
+        semaphore.wait()
+        let res = actions()
+        semaphore.signal()
+        return res
+    }
+
     ///
     /// Change the storage length, releasing oldest references to resources.
     ///
     public func setLength(_ length: Int) {
-        queueLength = length
-        recover()
+        semaphoring {
+            queueLength = length
+            recover()
+        }
     }
 
     func recover() {
@@ -43,7 +55,9 @@ extension ResourceQueueProtocol {
     /// Remove all strong references to enqueued resources.
     ///
     public func clean() {
-        queue.removeAll(keepingCapacity: true)
+        semaphoring {
+            queue.removeAll(keepingCapacity: true)
+        }
     }
 
     ///
@@ -61,6 +75,8 @@ extension ResourceQueueProtocol {
 }
 
 public class GenericResourceQueue<Handle: Hashable>: ResourceQueueProtocol {
+    public var semaphore = DispatchSemaphore(value: 1)
+
     public var queue: ArraySlice<(Handle, Any)> = ArraySlice([])
     public var queueLength: Int
     
@@ -76,26 +92,32 @@ public class GenericResourceQueue<Handle: Hashable>: ResourceQueueProtocol {
     ///     - handle: a handle to be used to remember the resource.
     ///
     public func enqueue<Resource>(resource: Resource, for handle: Handle) {
-        queue.append((handle, resource))
-        recover()
+        semaphoring {
+            queue.append((handle, resource))
+            recover()
+        }
     }
     
     ///
     /// Dequeue a resource at a hashable handle without removing it from strongly retained queue.
     ///
     public func dequeue<Resource>(at handle: Handle) -> Resource? {
-        guard let resource = queue.first(where: { $0.0 == handle })?.1 else {
-            return nil
+        return semaphoring { () -> Resource? in
+            guard let resource = queue.first(where: { $0.0 == handle })?.1 else {
+                return nil
+            }
+            guard let actualResource = resource as? Resource else {
+                remove(at: handle)
+                return nil
+            }
+            return actualResource
         }
-        guard let actualResource = resource as? Resource else {
-            remove(at: handle)
-            return nil
-        }
-        return actualResource
     }
 }
 
 public class ResourceQueue<Handle: Hashable, Resource>: ResourceQueueProtocol {
+    public var semaphore = DispatchSemaphore(value: 1)
+
     public var queue: ArraySlice<(Handle, Any)> = ArraySlice([])
     public var queueLength: Int
 
@@ -111,17 +133,21 @@ public class ResourceQueue<Handle: Hashable, Resource>: ResourceQueueProtocol {
     ///     - handle: a handle to be used to remember the resource.
     ///
     public func enqueue(resource: Resource, for handle: Handle) {
-        queue.append((handle, resource))
-        recover()
+        semaphoring {
+            queue.append((handle, resource))
+            recover()
+        }
     }
     
     ///
     /// Dequeue a resource at a hashable handle without removing it from strongly retained queue.
     ///
     public func dequeue(at handle: Handle) -> Resource? {
-        guard let res = queue.first(where: { $0.0 == handle })?.1 else {
-            return nil
+        return semaphoring { () -> Resource? in
+            guard let res = queue.first(where: { $0.0 == handle })?.1 else {
+                return nil
+            }
+            return (res as! Resource)
         }
-        return (res as! Resource)
     }
 }
